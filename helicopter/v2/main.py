@@ -1,19 +1,19 @@
 import time, math
 from config import LETTER_COUNT, STRING_COUNT, TRACK, HELICOPTER, LAND_POSITION, TIMEOUT
 
-def generate_frame(symbol: str) -> list:
+def generate_frame(symbol: str) -> list: # Генирируем кадр
     frame = []
     for _ in range(STRING_COUNT):
         frame.append(symbol * LETTER_COUNT)
     return frame
 
-def paint_land(frame: list, level: int) -> None:
+def paint_land(frame: list, level: int) -> None: # Рисуем землю
     frame[level - 1] = ''.join(['_' * LETTER_COUNT])
 
-def prepare_helicopter(x: int, y: int, mirror: bool) -> list:
+def prepare_helicopter(x: int, y: int, mirror: bool) -> list: # Форматируем вертолет смотря от его положения
     copter = HELICOPTER.copy()
     if mirror:
-        copter = [line[::-1] for line in copter]
+        copter = [line[::-1] for line in copter] # Зеркалим
     height = len(copter)
     width = len(copter[0])
     if y < -1 * height + 1:
@@ -35,7 +35,7 @@ def prepare_helicopter(x: int, y: int, mirror: bool) -> list:
             copter[i] = copter[i][:width + (LETTER_COUNT - width - x)]
     return copter
 
-def paint_helicopter(frame: list, x: int, y: int, gorizontal: bool) -> None:
+def paint_helicopter(frame: list, x: int, y: int, gorizontal: bool) -> None: # Рисуем вертолет
     mirror = gorizontal
     copter = prepare_helicopter(x, y, mirror)
     new_y = 0 if y < 0 else y
@@ -44,7 +44,7 @@ def paint_helicopter(frame: list, x: int, y: int, gorizontal: bool) -> None:
         frame[y + h] = frame[y + h][:x] + copter[h] + frame[y + h][x + len(copter[h]):]
         time.sleep(TIMEOUT)
 
-def get_copter_positions(track: list) -> list:
+def get_copter_positions(track: list) -> list: # Узнаем позицию вертолета
     points = []
     for stage_number in range(len(track) - 1):
         gorizontal = False
@@ -65,11 +65,11 @@ def get_copter_positions(track: list) -> list:
             points.append({ "x": int(x), "y": int(y), "gorizontal": gorizontal }) 
     return points
 
-def paint_frame(frame: list) -> None:
+def paint_frame(frame: list) -> None: # Рисуем кадр
     for f in frame:
         print(f)
 
-def print_frames(track: list, land: int) -> None:
+def print_frames(track: list, land: int) -> None: # Рисуем кадры
     positions = get_copter_positions(track)
     for point in positions:
         frame = generate_frame(' ')
